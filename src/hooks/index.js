@@ -20,18 +20,18 @@ const getUniqueValues = (array, key) => {
     return preVal;
   }, []);
 };
+const parseRoom = item => {
+  const id = item.sys.id;
+  const images = item.fields.images.map(image => image.fields.file.url);
+  const room = { ...item.fields, images, id };
+  return room;
+};
 export const useRooms = () => {
   const [roomsState, setRoomsState] = useState({
     loading: false,
   });
-
   const formatData = items => {
-    const newItems = items.map(item => {
-      const id = item.sys.id;
-      const images = item.fields.images.map(image => image.fields.file.url);
-      const room = { ...item.fields, images, id };
-      return room;
-    });
+    const newItems = items.map(item => parseRoom(item));
     return newItems;
   };
   const getRoom = slug => {
@@ -46,11 +46,7 @@ export const useRooms = () => {
         const dataRooms = await contentful().getEntries({
           content_type: 'beachResortRoom',
         });
-        console.log(dataRooms);
-
-        const { default: data } = await import('data');
         const rooms = formatData(dataRooms.items);
-        // const rooms = formatData(data);
         const featuredRooms = rooms.filter(room => room.featured);
 
         setRoomsState({
@@ -74,7 +70,7 @@ export const useRooms = () => {
 };
 
 export const useRoomsFilter = (defaultRooms, callback) => {
-  const [rooms, setRooms] = useState(defaultRooms);
+  const [rooms, setRooms] = useState([]);
   const [roomsOptionValues, setRoomsOptionValues] = useState({
     types: ['all'],
     capacities: [0],
@@ -130,4 +126,28 @@ export const useRoomsFilter = (defaultRooms, callback) => {
     setFilterOps,
     filterOps,
   };
+};
+export const useRoom = slug => {
+  const [state, setState] = useState({ loading: false, room: null });
+  useEffect(() => {
+    async function fetchRoom() {
+      try {
+        setState(state => ({ ...state, loading: true }));
+        const roomData = await contentful().getEntries({
+          content_type: 'beachResortRoom',
+          'fields.slug[all]': slug,
+        });
+        if (roomData.items.length > 0) {
+          const room = parseRoom(roomData.items[0]);
+          setState({ room, loading: false });
+        } else {
+          setState({ room: { error: 'Not found' }, loading: false });
+        }
+      } catch (error) {
+        setState({ room: { error }, loading: false });
+      }
+    }
+    fetchRoom();
+  }, [slug]);
+  return [state.room, state.loading];
 };

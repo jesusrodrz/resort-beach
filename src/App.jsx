@@ -8,7 +8,6 @@ import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import Navbar from 'components/Navbar';
 import 'App.css';
 import { RoomContextProvider } from 'context';
-import Test from 'pages/Test';
 
 const App = () => {
   return (
@@ -18,7 +17,6 @@ const App = () => {
           <Navbar />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/test" component={Test} />
             <Route exact path="/rooms/" component={Rooms} />
             <Route exact path="/rooms/:slug" component={SingleRoom} />
             <Route component={Error} />

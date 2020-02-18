@@ -3,7 +3,7 @@ import Title from 'components/Title';
 import { FaCocktail, FaHiking, FaShuttleVan, FaBeer } from 'react-icons/fa';
 
 export default function Services() {
-  const [services, setServices] = useState([
+  const [services] = useState([
     {
       icon: <FaCocktail />,
       title: 'Free Cocktails',

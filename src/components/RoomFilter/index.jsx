@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRoomsValue } from 'context';
 import Title from 'components/Title';
 import { useRoomsFilter } from 'hooks';
 
-export default function RoomsFilter({}) {
+export default function RoomsFilter() {
   const {
     roomsState: { rooms },
     setRoomsState,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRoomsValue } from 'context';
 import Loading from 'components/Loading';
 import Room from 'components/Room';

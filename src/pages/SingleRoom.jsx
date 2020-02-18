@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import defaultBcg from 'images/room-1.jpeg';
-import { useRoomsValue } from 'context';
+import React from 'react';
 import Loading from 'components/Loading';
 import { Link } from 'react-router-dom';
 import Hero from 'components/Hero';
 import Banner from 'components/Banner';
+import { useRoom } from 'hooks';
 
 const Error = () => (
   <div className="error">
     <h3>Erro 404 Room not found</h3>
     <Link to="/rooms" className="btn-primary">
-      Back to room
+      Back to rooms
     </Link>
   </div>
 );
@@ -31,7 +30,6 @@ const Room = ({ room }) => {
     size,
     extras,
   } = room;
-  console.log(images);
   return (
     <>
       <Hero className="roomsHero" src={mainImg}>
@@ -63,32 +61,26 @@ const Room = ({ room }) => {
           </article>
         </div>
       </section>
-      <section className="room-extras">
-        <h6>Extras</h6>
-        <ul className="extras">
-          {extras.map((item, i) => (
-            <li key={i}>- {item}</li>
-          ))}
-        </ul>
-      </section>
+      {extras && (
+        <section className="room-extras">
+          <h6>Extras</h6>
+          <ul className="extras">
+            {extras.map((item, i) => (
+              <li key={i}>- {item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   );
 };
 export default function SingleRoom({ match }) {
-  const [room, setRoom] = useState(null);
-  const { getRoom, roomsState } = useRoomsValue();
   const { slug } = match.params;
-  const { loading } = roomsState;
-
-  useEffect(() => {
-    if ((!loading, roomsState.rooms)) {
-      // const room = getRoom('asdasd');
-      const room = getRoom(slug);
-      setRoom(room === undefined ? 'error' : room);
-      console.log(room);
-    }
-  }, [roomsState]);
-  console.log(room);
-  const RenderRoom = room === 'error' ? <Error /> : <Room room={room} />;
-  return room && !loading ? RenderRoom : <Loader />;
+  const [room, loading] = useRoom(slug);
+  if (room && !room.error) {
+    return <Room room={room} />;
+  } else if (!room || loading) {
+    return <Loader />;
+  }
+  return <Error />;
 }
