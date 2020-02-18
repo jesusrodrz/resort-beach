@@ -95,7 +95,7 @@ export const useRoomsFilter = (defaultRooms, callback) => {
     const minSize = Math.min(...sizes);
     const max = Math.max(...prices);
     const min = Math.min(...prices);
-    const capacities = getUniqueValues(rooms, 'capacity').sort((a, b) => a - b);
+    const capacities = getUniqueValues(defaultRooms, 'capacity').sort((a, b) => a - b);
 
     setFilterOps(op => ({ ...op, price: max, maxSize, minSize }));
     setRoomsOptionValues({ types: ['all', ...types], capacities, prices: { max, min } });
